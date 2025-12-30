@@ -1,34 +1,28 @@
 import requests
-import time
+import json
+from pathlib import Path
 
-BASE_URL = "https://api.scryfall.com/cards/search"
 API_URL = "https://api.scryfall.com"
 
-def get_cards_by_set(set_code, max_pages=None):
-    cards = []
-    params = {"q" : f"set:{set_code}"}
-    url = BASE_URL
-    page = 1
-    has_more = True
+def download_bulk_cards(output_path="data/raw/cards.json"):
 
-    while has_more:
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        data = response.json()
+    print("Buscando metadados do bulk...")
+    bulk_meta = requests.get( f"{API_URL}/bulk-data")
+    bulk_meta.raise_for_status()
 
-        cards.extend(data["data"])
+    bulk_data = bulk_meta.json()["data"]
 
-        print(f"página {page} | total de cartas: {len(cards)} ")
+    default_cards = next( b for b in bulk_data if b["type"] == "default_cards" ) 
 
-        has_more = data.get("has_more", False)
-        if has_more:
-            url = data["next_page"]
-            params = None
-        page += 1
+    download_url = default_cards["download_uri"]
+    print("Download iniciado... (isso pode demorar)")
 
-        if max_pages and page > max_pages:
-            break
+    response = requests.get(download_url)
+    response.raise_for_status()
 
-        time.sleep(0.1)
-    
-    return cards
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(response.json(), f)
+
+    print(f"Bulk salvo em {output_path}")
