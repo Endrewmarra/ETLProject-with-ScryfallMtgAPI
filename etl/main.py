@@ -1,6 +1,6 @@
-import requests
-from extract import get_sets
+from extract import get_cards_by_set
 
-sets = get_sets()
+cards = get_cards_by_set("khm")
 
-print(f'Total de coleções: {len(sets)}')
+print(f'cartas extraídas: {len(cards)}')
+print(cards[300]["name"])
