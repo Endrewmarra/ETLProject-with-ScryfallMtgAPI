@@ -1,2 +1,3 @@
 # ETLProject-with-ScryfallMtgAPI
-Extração de totas cartas de Magic the Gatering, separação por coleção, cor e tipo, e armazenamento.
+
+ETL pipeline using Scryfall API to extract, transform and load Magic: The Gathering data
