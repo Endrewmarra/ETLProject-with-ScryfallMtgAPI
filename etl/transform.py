@@ -14,7 +14,7 @@ def normalize_card(card):
         "set_name": card.get("set_name"),
         "colors": card.get("colors", []),
         "type_line": card.get("type_line"),
-        "cmc": card.get("cmc"),
+        "cmc": str(card.get("cmc")),
         "rarity": card.get("rarity"),
     }
 
